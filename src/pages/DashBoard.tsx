@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import styles from './Dashboard.module.css';
 
 interface UserInfo {
   name: string;
@@ -14,6 +15,21 @@ const Dashboard: React.FC = () => {
   const [selectedRoom, setSelectedRoom] = useState<number | ''>('');
   const [partnerId, setPartnerId] = useState('');
   const [partnerName, setPartnerName] = useState<string | null>(null);
+  const [currentFloor, setCurrentFloor] = useState(1);
+
+  const floors = [
+    { number: 1, label: '1st Floor' },
+    { number: 2, label: '2nd Floor' },
+    { number: 3, label: '3rd Floor' },
+    { number: 4, label: '4th Floor' },
+  ];
+
+  const getRoomsForFloor = (floor: number) => {
+    const start = floor * 100 + 1;
+    const end = start + 19; // This will give us rooms 101-120, 201-220, etc.
+    return Array.from({ length: 20 }, (_, i) => start + i)
+      .filter(room => availableRooms.includes(room));
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -114,87 +130,101 @@ const Dashboard: React.FC = () => {
       });
   };
 
+  const renderRoomSelection = () => {
+    return (
+      <div className={styles.formGroup}>
+        <label className={styles.label}>Select a floor:</label>
+        <div className={styles.floorSelector}>
+          {floors.map((floor) => (
+            <button
+              key={floor.number}
+              className={`${styles.floorButton} ${
+                currentFloor === floor.number ? styles.active : ''
+              }`}
+              onClick={() => setCurrentFloor(floor.number)}
+            >
+              {floor.label}
+            </button>
+          ))}
+        </div>
+        
+        <label className={styles.label}>Select a room:</label>
+        <div className={styles.roomGrid}>
+          {getRoomsForFloor(currentFloor).map((room) => (
+            <button
+              key={room}
+              className={`${styles.roomBlock} ${
+                selectedRoom === room ? styles.selected : ''
+              }`}
+              onClick={() => setSelectedRoom(room)}
+            >
+              {room}
+            </button>
+          ))}
+        </div>
+        {selectedRoom && (
+          <button
+            onClick={handleSelectRoom}
+            className={styles.button}
+            style={{ marginTop: '1rem' }}
+          >
+            Assign Room {selectedRoom}
+          </button>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-      }}
-    >
-      <h1>Welcome to the Dashboard</h1>
-      {userInfo ? (
-        <>
-          <p>Hello, {userInfo.name}!</p>
-          <p>
-            {userInfo.allotedRoom
-              ? `Your allotted room is: ${userInfo.allotedRoom}`
-              : 'No room has been allotted to you yet.'}
-          </p>
-          {!userInfo.allotedRoom && !partnerName && (
-            <div>
-              <label htmlFor="partner-id">Enter your partner ID:</label>
-              <input
-                id="partner-id"
-                type="text"
-                value={partnerId}
-                onChange={(e) => setPartnerId(e.target.value)}
-                style={{ marginLeft: '8px' }}
-              />
-              <button
-                onClick={handlePartnerValidation}
-                style={{
-                  padding: '10px',
-                  fontSize: '16px',
-                  cursor: 'pointer',
-                  marginLeft: '8px',
-                }}
-              >
-                Validate Partner ID
-              </button>
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h1 className={styles.welcome}>Dashboard</h1>
+        {userInfo ? (
+          <>
+            <div className={styles.info}>
+              <p>Hello, {userInfo.name}!</p>
+              <p>
+                {userInfo.allotedRoom
+                  ? `Your allotted room is: ${userInfo.allotedRoom}`
+                  : 'No room has been allotted to you yet.'}
+              </p>
             </div>
-          )}
-          {partnerName && (
-            <>
-              <p>Partner Name: {partnerName}</p>
-              <div>
-                <label htmlFor="room-select">Select a room:</label>
-                <select
-                  id="room-select"
-                  value={selectedRoom}
-                  onChange={(e) => setSelectedRoom(Number(e.target.value))}
-                  style={{ marginLeft: '8px' }}
-                >
-                  <option value="" disabled>
-                    Choose a room
-                  </option>
-                  {availableRooms.map((room) => (
-                    <option key={room} value={room}>
-                      {room}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={handleSelectRoom}
-                  style={{
-                    padding: '10px',
-                    fontSize: '16px',
-                    cursor: 'pointer',
-                    marginTop: '16px',
-                    marginLeft: '8px',
-                  }}
-                >
-                  Assign Room
-                </button>
+
+            {!userInfo.allotedRoom && !partnerName && (
+              <div className={styles.formGroup}>
+                <label htmlFor="partner-id" className={styles.label}>
+                  Enter your partner ID:
+                </label>
+                <div className={styles.inputGroup}>
+                  <input
+                    id="partner-id"
+                    type="text"
+                    value={partnerId}
+                    onChange={(e) => setPartnerId(e.target.value)}
+                    className={styles.input}
+                    placeholder="Enter 6-digit ID"
+                  />
+                  <button
+                    onClick={handlePartnerValidation}
+                    className={styles.validateButton}
+                  >
+                    Validate
+                  </button>
+                </div>
               </div>
-            </>
-          )}
-        </>
-      ) : (
-        <p>Loading your information...</p>
-      )}
+            )}
+
+            {partnerName && (
+              <div className={styles.partnerInfo}>
+                <p>Partner Name: {partnerName}</p>
+                {renderRoomSelection()}
+              </div>
+            )}
+          </>
+        ) : (
+          <p className={styles.loading}>Loading your information...</p>
+        )}
+      </div>
     </div>
   );
 };

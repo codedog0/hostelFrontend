@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import styles from './LoginForm.module.css';
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -49,33 +50,33 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
-        <h2>Login</h2>
+    <div className={styles.container}>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <h2 className={styles.title}>Login</h2>
         {errorMessage && (
-          <div style={{ color: 'red', marginBottom: '16px' }}>
+          <div className={styles.error}>
             {errorMessage}
           </div>
         )}
-        <label htmlFor="username" style={{ marginBottom: '8px' }}>Username:</label>
+        <label htmlFor="username" className={styles.label}>Username</label>
         <input
           type="text"
           id="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
-          style={{ padding: '8px', marginBottom: '16px', fontSize: '16px' }}
+          className={styles.input}
         />
-        <label htmlFor="password" style={{ marginBottom: '8px' }}>Password:</label>
+        <label htmlFor="password" className={styles.label}>Password</label>
         <input
           type="password"
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ padding: '8px', marginBottom: '16px', fontSize: '16px' }}
+          className={styles.input}
         />
-        <button type="submit" style={{ padding: '10px', fontSize: '16px', cursor: 'pointer' }}>
+        <button type="submit" className={styles.button}>
           Login
         </button>
       </form>

@@ -1,0 +1,210 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  padding: 2rem;
+  background-color: #f8f9fa;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.welcome {
+  color: #1a1a1a;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.info {
+  color: #333;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background-color: #f0fbff;
+  border-radius: 8px;
+  border-left: 4px solid #61dafb;
+}
+
+.formGroup {
+  margin-bottom: 2rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #61dafb;
+  box-shadow: 0 0 0 3px rgba(97, 218, 251, 0.1);
+}
+
+.inputGroup {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.validateButton {
+  background-color: #61dafb;
+  color: #1a1a1a;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  min-width: 100px;
+}
+
+.validateButton:hover {
+  background-color: #4fa8d1;
+  transform: translateY(-1px);
+}
+
+.partnerInfo {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background-color: #e3f6ff;
+  border-radius: 8px;
+  border-left: 4px solid #61dafb;
+}
+
+.loading {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Floor selector styles */
+.floorSelector {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem;
+  background-color: #f1f3f5;
+  border-radius: 8px;
+}
+
+.floorButton {
+  flex: 1;
+  padding: 0.75rem;
+  background-color: white;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.floorButton:hover {
+  border-color: #61dafb;
+  color: #1a1a1a;
+  transform: translateY(-1px);
+}
+
+.floorButton.active {
+  background-color: #61dafb;
+  border-color: #4fa8d1;
+  color: #1a1a1a;
+}
+
+/* Room grid styles */
+.roomGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.roomBlock {
+  aspect-ratio: 1;
+  background-color: white;
+  border: 2px solid #61dafb;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.1rem;
+  color: #1a1a1a;
+  padding: 1rem;
+}
+
+.roomBlock:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(97, 218, 251, 0.2);
+  background-color: #f0fbff;
+}
+
+.roomBlock.selected {
+  background-color: #61dafb;
+  color: #1a1a1a;
+  border-color: #4fa8d1;
+  box-shadow: 0 4px 8px rgba(97, 218, 251, 0.3);
+}
+
+.button {
+  background-color: #61dafb;
+  color: #1a1a1a;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  width: 100%;
+}
+
+.button:hover {
+  background-color: #4fa8d1;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .roomGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .roomGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .floorSelector {
+    flex-direction: column;
+  }
+} 
