@@ -17,7 +17,7 @@ const Leaderboards: React.FC = () => {
     useEffect(() => {
         const fetchRankings = async () => {
             try {
-                const response = await axios.get<Ranking[]>('https://hostelbackend-fd9l.onrender.com/api/v1/rankings');
+                const response = await axios.get<Ranking[]>('http://localhost:8000/api/v1/rankings');
                 setRankings(response.data);
             } catch (err) {
                 setError('Failed to fetch rankings');
