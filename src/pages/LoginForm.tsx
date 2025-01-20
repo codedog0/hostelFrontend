@@ -23,7 +23,7 @@ const LoginForm: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/v1/signIn?username=${encodeURIComponent(
+        `https://hostelbackend-fd9l.onrender.com/api/v1/signIn?username=${encodeURIComponent(
           username
         )}&password=${encodeURIComponent(password)}`, // Query parameters in URL
         null // No body for the POST request

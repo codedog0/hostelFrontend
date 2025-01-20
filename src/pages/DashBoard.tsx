@@ -40,7 +40,7 @@ const Dashboard: React.FC = () => {
     } else {
       // Fetch user info using Axios
       axios
-        .get('http://localhost:8000/api/v1/getUserInfo', {
+        .get('https://hostelbackend-fd9l.onrender.com/api/v1/getUserInfo', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
             // If allotedRoom is null, fetch available rooms
             if (!response.data.allotedRoom) {
               axios
-                .get('http://localhost:8000/api/v1/getAvailableRooms', {
+                .get('https://hostelbackend-fd9l.onrender.com/api/v1/getAvailableRooms', {
                   headers: {
                     Authorization: `Bearer ${token}`,
                   },
@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
 
     const token = localStorage.getItem('access_token');
     axios
-      .get(`http://localhost:8000/api/v1/getPartnerInfo?partnerId=${partnerId}`, {
+      .get(`https://hostelbackend-fd9l.onrender.com/api/v1/getPartnerInfo?partnerId=${partnerId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -111,7 +111,7 @@ const Dashboard: React.FC = () => {
     const token = localStorage.getItem('access_token');
     axios
       .post(
-        'http://localhost:8000/api/v1/bookRoom',
+        'https://hostelbackend-fd9l.onrender.com/api/v1/bookRoom',
         { roomId: selectedRoom,partnerId:partnerId },
         {
           headers: {
