@@ -6,6 +6,7 @@ import styles from './Dashboard.module.css';
 interface UserInfo {
   name: string;
   allotedRoom: string | null;
+  id: string;
 }
 
 const Dashboard: React.FC = () => {
@@ -16,6 +17,8 @@ const Dashboard: React.FC = () => {
   const [partnerId, setPartnerId] = useState('');
   const [partnerName, setPartnerName] = useState<string | null>(null);
   const [currentFloor, setCurrentFloor] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const roomsPerPage = 6;  // 3x2 grid
 
   const floors = [
     { number: 1, label: '1st Floor' },
@@ -26,9 +29,8 @@ const Dashboard: React.FC = () => {
 
   const getRoomsForFloor = (floor: number) => {
     const start = floor * 100 + 1;
-    const end = start + 19; // This will give us rooms 101-120, 201-220, etc.
-    return Array.from({ length: 20 }, (_, i) => start + i)
-      .filter(room => availableRooms.includes(room));
+    const end = start + 19;
+    return Array.from({ length: 20 }, (_, i) => start + i);
   };
 
   useEffect(() => {
@@ -131,6 +133,11 @@ const Dashboard: React.FC = () => {
   };
 
   const renderRoomSelection = () => {
+    const floorRooms = getRoomsForFloor(currentFloor);
+    const totalPages = Math.ceil(floorRooms.length / roomsPerPage);
+    const startIndex = currentPage * roomsPerPage;
+    const displayedRooms = floorRooms.slice(startIndex, startIndex + roomsPerPage);
+
     return (
       <div className={styles.formGroup}>
         <label className={styles.label}>Select a floor:</label>
@@ -141,36 +148,140 @@ const Dashboard: React.FC = () => {
               className={`${styles.floorButton} ${
                 currentFloor === floor.number ? styles.active : ''
               }`}
-              onClick={() => setCurrentFloor(floor.number)}
+              onClick={() => {
+                setCurrentFloor(floor.number);
+                setCurrentPage(0);
+              }}
             >
               {floor.label}
             </button>
           ))}
         </div>
         
-        <label className={styles.label}>Select a room:</label>
-        <div className={styles.roomGrid}>
-          {getRoomsForFloor(currentFloor).map((room) => (
-            <button
-              key={room}
-              className={`${styles.roomBlock} ${
-                selectedRoom === room ? styles.selected : ''
-              }`}
-              onClick={() => setSelectedRoom(room)}
-            >
-              {room}
-            </button>
-          ))}
+        <div className={styles.roomLegend}>
+          <div className={styles.legendItem}>
+            <span className={styles.legendBox + ' ' + styles.available}></span>
+            <span>Available</span>
+          </div>
+          <div className={styles.legendItem}>
+            <span className={styles.legendBox + ' ' + styles.occupied}></span>
+            <span>Occupied</span>
+          </div>
         </div>
-        {selectedRoom && (
-          <button
-            onClick={handleSelectRoom}
-            className={styles.button}
-            style={{ marginTop: '1rem' }}
+
+        <label className={styles.label}>Select a room:</label>
+        <div className={styles.roomCarousel}>
+          <button 
+            className={styles.carouselButton}
+            onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+            disabled={currentPage === 0}
           >
-            Assign Room {selectedRoom}
+            ←
           </button>
-        )}
+
+          <div className={styles.floorLayout}>
+            <svg 
+              viewBox="0 0 800 800" 
+              className={styles.floorSvg}
+            >
+              {/* Balcony */}
+              <rect x="250" y="50" width="300" height="60" rx="30" className={styles.balconySection} />
+              <text x="400" y="85" textAnchor="middle" className={styles.svgText}>Balcony</text>
+
+              {/* Main Vertical Corridor */}
+              <rect x="380" y="110" width="40" height="580" fill="#A9A9A9"/>
+
+              {/* Horizontal Corridors */}
+              <rect x="200" y="250" width="400" height="40" fill="#A9A9A9"/>
+              <rect x="200" y="450" width="400" height="40" fill="#A9A9A9"/>
+
+              {/* Room 101 (Special Position) */}
+              <g onClick={() => availableRooms.includes(101) ? setSelectedRoom(101) : null}>
+                <rect 
+                  x="100" 
+                  y="400" 
+                  width="140" 
+                  height="100" 
+                  rx="30"
+                  className={`${styles.svgRoom} ${
+                    selectedRoom === 101 ? styles.selected : ''
+                  } ${availableRooms.includes(101) ? styles.available : styles.occupied}`}
+                />
+                <text x="170" y="460" textAnchor="middle" className={styles.svgText}>
+                  Room 101
+                </text>
+              </g>
+
+              {/* Left Side Rooms */}
+              {[
+                { num: 104, x: 200, y: 130 },
+                { num: 103, x: 200, y: 300 },
+                { num: 102, x: 200, y: 500 }
+              ].map(room => (
+                <g key={`room-${room.num}`} onClick={() => availableRooms.includes(room.num) ? setSelectedRoom(room.num) : null}>
+                  <rect 
+                    x={room.x} 
+                    y={room.y} 
+                    width="170" 
+                    height="110" 
+                    rx="30"
+                    className={`${styles.svgRoom} ${
+                      selectedRoom === room.num ? styles.selected : ''
+                    } ${availableRooms.includes(room.num) ? styles.available : styles.occupied}`}
+                  />
+                  <text 
+                    x={room.x + 85} 
+                    y={room.y + 65} 
+                    textAnchor="middle" 
+                    className={styles.svgText}
+                  >
+                    Room {room.num}
+                  </text>
+                </g>
+              ))}
+
+              {/* Right Side Rooms */}
+              {[
+                { num: 105, x: 430, y: 130 },
+                { num: 106, x: 430, y: 300 },
+                { num: 107, x: 430, y: 500 }
+              ].map(room => (
+                <g key={`room-${room.num}`} onClick={() => availableRooms.includes(room.num) ? setSelectedRoom(room.num) : null}>
+                  <rect 
+                    x={room.x} 
+                    y={room.y} 
+                    width="170" 
+                    height="110" 
+                    rx="30"
+                    className={`${styles.svgRoom} ${
+                      selectedRoom === room.num ? styles.selected : ''
+                    } ${availableRooms.includes(room.num) ? styles.available : styles.occupied}`}
+                  />
+                  <text 
+                    x={room.x + 85} 
+                    y={room.y + 65} 
+                    textAnchor="middle" 
+                    className={styles.svgText}
+                  >
+                    Room {room.num}
+                  </text>
+                </g>
+              ))}
+
+              {/* Toilet */}
+              <rect x="300" y="690" width="200" height="60" rx="30" className={styles.toiletSection} />
+              <text x="400" y="725" textAnchor="middle" className={styles.svgText}>Toilet</text>
+            </svg>
+          </div>
+
+          <button 
+            className={styles.carouselButton}
+            onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+            disabled={currentPage >= totalPages - 1}
+          >
+            →
+          </button>
+        </div>
       </div>
     );
   };
@@ -183,6 +294,7 @@ const Dashboard: React.FC = () => {
           <>
             <div className={styles.info}>
               <p>Hello, {userInfo.name}!</p>
+              <p>Your ID: {userInfo.id}</p>
               <p>
                 {userInfo.allotedRoom
                   ? `Your allotted room is: ${userInfo.allotedRoom}`

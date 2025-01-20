@@ -14,7 +14,7 @@
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 800px;
+  max-width: 1600px;
   transition: transform 0.2s ease;
 }
 
@@ -140,39 +140,169 @@
 }
 
 /* Room grid styles */
+.roomCarousel {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
 .roomGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.75rem;
-  margin: 1rem 0;
+  grid-template-columns: repeat(2, 1fr);  /* Changed to 2 columns */
+  grid-template-rows: repeat(3, 1fr);     /* Changed to 3 rows */
+  gap: 1.5rem;
+  padding: 1.5rem;
+  min-width: 400px;  /* Adjusted for 2 columns */
+}
+
+.roomRow {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.roomBlock.small {
+  width: 80px;
+  height: 70px;
+  font-size: 0.8rem;
+}
+
+.centerLeftRooms, .rightRooms {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.roomColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.corridor {
+  background: #A9A9A9;
+  width: 30px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
 }
 
 .roomBlock {
-  aspect-ratio: 1;
-  background-color: white;
-  border: 2px solid #61dafb;
-  border-radius: 8px;
+  padding: 2rem;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 1.1rem;
-  color: #1a1a1a;
-  padding: 1rem;
 }
 
-.roomBlock:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(97, 218, 251, 0.2);
-  background-color: #f0fbff;
+.roomBlock.available {
+  background: #90EE90;  /* Light green */
+  border-color: #32CD32;
+  color: #006400;
+}
+
+.roomBlock.occupied {
+  background: #FFB6C1;  /* Light red */
+  border-color: #DC143C;
+  color: #8B0000;
+  cursor: not-allowed;
 }
 
 .roomBlock.selected {
-  background-color: #61dafb;
-  color: #1a1a1a;
-  border-color: #4fa8d1;
-  box-shadow: 0 4px 8px rgba(97, 218, 251, 0.3);
+  background: #007bff;
+  color: white;
+  border-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.roomBlock.available:hover:not(:disabled) {
+  transform: scale(1.05);
+  background: #32CD32;  /* Darker green on hover */
+}
+
+.roomLegend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1rem 0;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legendBox {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.legendBox.available {
+  background: #90EE90;
+  border: 1px solid #32CD32;
+}
+
+.legendBox.occupied {
+  background: #FFB6C1;
+  border: 1px solid #DC143C;
+}
+
+.carouselButton {
+  padding: 1.5rem;
+  font-size: 1.5rem;
+  height: 60px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.carouselButton:hover:not(:disabled) {
+  background: #0056b3;
+  transform: scale(1.1);
+}
+
+.carouselButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.paginationDots {
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot:hover {
+  background: #999;
+}
+
+.dot.activeDot {
+  background: #007bff;
+  transform: scale(1.2);
 }
 
 .button {
@@ -207,4 +337,153 @@
   .floorSelector {
     flex-direction: column;
   }
+}
+
+.floorLayout {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.floorSvg {
+  width: 100%;
+  height: auto;
+  background: #f8f9fa;
+}
+
+.svgRoom {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.svgRoom.available {
+  fill: #90EE90;
+  stroke: #32CD32;
+  stroke-width: 2;
+}
+
+.svgRoom.occupied {
+  fill: #FFB6C1;
+  stroke: #DC143C;
+  stroke-width: 2;
+}
+
+.svgRoom.selected {
+  fill: #007bff;
+  stroke: #0056b3;
+  stroke-width: 3;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.svgRoom.available:hover {
+  transform: scale(1.05);
+  transform-origin: center;
+}
+
+.svgText {
+  fill: #1a1a1a;
+  font-size: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  pointer-events: none;
+  font-weight: 500;
+}
+
+.svgRoom.selected + .svgText {
+  fill: white;
+}
+
+.balconySection {
+  fill: #FFE4B5;
+  stroke: #DEB887;
+  stroke-width: 2;
+}
+
+.toiletSection {
+  fill: #FFA07A;
+  stroke: #FF7F50;
+  stroke-width: 2;
+}
+
+.mainSection {
+  display: flex;
+  gap: 2rem;  /* Increased gap between sections */
+  justify-content: center;
+  position: relative;
+  padding: 1rem 0;
+}
+
+.leftRooms, .rightRooms {
+  display: flex;
+  gap: 1.5rem;  /* Increased gap */
+}
+
+.roomColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;  /* Increased gap between rooms */
+}
+
+.middleRoom {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 2rem;  /* Indent for room 101 */
+}
+
+.roomBlock {
+  width: 120px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.roomBlock.small {
+  width: 80px;
+  height: 70px;
+  font-size: 0.8rem;
+}
+
+.corridor {
+  background: #A9A9A9;
+  width: 30px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* Keep existing color schemes */
+.roomBlock.available {
+  background: #90EE90;
+  border: 2px solid #32CD32;
+  color: #006400;
+}
+
+.roomBlock.occupied {
+  background: #FFB6C1;
+  border: 2px solid #DC143C;
+  color: #8B0000;
+}
+
+.roomBlock:hover:not(.occupied) {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.roomBlock.selected {
+  background: #007bff;
+  color: white;
+  border-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 } 
