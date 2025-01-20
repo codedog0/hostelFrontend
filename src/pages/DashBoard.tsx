@@ -282,6 +282,21 @@ const Dashboard: React.FC = () => {
             →
           </button>
         </div>
+
+        {selectedRoom && (
+          <div className={styles.bookingSection}>
+            <p className={styles.selectedRoomInfo}>
+              Selected Room: {selectedRoom}
+              {partnerName && <span> | Partner: {partnerName}</span>}
+            </p>
+            <button 
+              className={styles.bookButton}
+              onClick={handleSelectRoom}
+            >
+              Book Room
+            </button>
+          </div>
+        )}
       </div>
     );
   };
