@@ -12,8 +12,8 @@ interface UserInfo {
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [availableRooms, setAvailableRooms] = useState<number[]>([]);
-  const [selectedRoom, setSelectedRoom] = useState<number | ''>('');
+  const [availableRooms, setAvailableRooms] = useState<string[]>([]);
+  const [selectedRoom, setSelectedRoom] = useState<string | ''>('');
   const [partnerId, setPartnerId] = useState('');
   const [partnerName, setPartnerName] = useState<string | null>(null);
   const [currentFloor, setCurrentFloor] = useState(1);
@@ -40,7 +40,7 @@ const Dashboard: React.FC = () => {
     } else {
       // Fetch user info using Axios
       axios
-        .get('https://hostelbackend-fd9l.onrender.com/api/v1/getUserInfo', {
+        .get('http://localhost:8000/api/v1/getUserInfo', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
             // If allotedRoom is null, fetch available rooms
             if (!response.data.allotedRoom) {
               axios
-                .get('https://hostelbackend-fd9l.onrender.com/api/v1/getAvailableRooms', {
+                .get('http://localhost:8000/api/v1/getAvailableRooms', {
                   headers: {
                     Authorization: `Bearer ${token}`,
                   },
@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
 
     const token = localStorage.getItem('access_token');
     axios
-      .get(`https://hostelbackend-fd9l.onrender.com/api/v1/getPartnerInfo?partnerId=${partnerId}`, {
+      .get(`http://localhost:8000/api/v1/getPartnerInfo?partnerId=${partnerId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -111,7 +111,7 @@ const Dashboard: React.FC = () => {
     const token = localStorage.getItem('access_token');
     axios
       .post(
-        'https://hostelbackend-fd9l.onrender.com/api/v1/bookRoom',
+        'http://localhost:8000/api/v1/bookRoom',
         { roomId: selectedRoom,partnerId:partnerId },
         {
           headers: {
@@ -137,6 +137,21 @@ const Dashboard: React.FC = () => {
     const totalPages = Math.ceil(floorRooms.length / roomsPerPage);
     const startIndex = currentPage * roomsPerPage;
     const displayedRooms = floorRooms.slice(startIndex, startIndex + roomsPerPage);
+
+    const handleRoom101=()=>{
+      if(currentPage==0){
+        return (101+((currentFloor-1)*100)).toString();
+      }
+      else if(currentPage==1){
+        return '1A1';
+      }
+      else if(currentPage==2){
+        return '1A2';
+      }
+      else{
+        return '1A3'
+      }
+    }
 
     return (
       <div className={styles.formGroup}>
@@ -196,27 +211,27 @@ const Dashboard: React.FC = () => {
               <rect x="200" y="450" width="400" height="40" fill="#A9A9A9"/>
 
               {/* Room 101 (Special Position) */}
-              <g onClick={() => availableRooms.includes(101) ? setSelectedRoom(101) : null}>
+              <g onClick={() => availableRooms.includes(handleRoom101()) ? setSelectedRoom(handleRoom101()) : null}>
                 <rect 
                   x="100" 
-                  y="400" 
+                  y="415" 
                   width="140" 
                   height="100" 
                   rx="30"
                   className={`${styles.svgRoom} ${
-                    selectedRoom === 101 ? styles.selected : ''
-                  } ${availableRooms.includes(101) ? styles.available : styles.occupied}`}
+                    selectedRoom === handleRoom101() ? styles.selected : ''
+                  } ${availableRooms.includes(handleRoom101()) ? styles.available : styles.occupied}`}
                 />
-                <text x="170" y="460" textAnchor="middle" className={styles.svgText}>
-                  Room 101
+                <text x="170" y="470" textAnchor="middle" className={styles.svgText}>
+                  Room {handleRoom101()}
                 </text>
               </g>
 
               {/* Left Side Rooms */}
               {[
-                { num: 104, x: 200, y: 130 },
-                { num: 103, x: 200, y: 300 },
-                { num: 102, x: 200, y: 500 }
+                { num: (104+((currentPage)*6+((currentFloor-1)*100))).toString()  , x: 200, y: 130 },
+                { num: (103 +((currentPage)*6+((currentFloor-1)*100))).toString() , x: 200, y: 300 },
+                { num: (102 + ((currentPage)*6+((currentFloor-1)*100))).toString(), x: 200, y: 525 }
               ].map(room => (
                 <g key={`room-${room.num}`} onClick={() => availableRooms.includes(room.num) ? setSelectedRoom(room.num) : null}>
                   <rect 
@@ -242,9 +257,9 @@ const Dashboard: React.FC = () => {
 
               {/* Right Side Rooms */}
               {[
-                { num: 105, x: 430, y: 130 },
-                { num: 106, x: 430, y: 300 },
-                { num: 107, x: 430, y: 500 }
+                { num: (105 +((currentPage)*6+((currentFloor-1)*100))).toString(), x: 430, y: 130 },
+                { num: (106+((currentPage)*6+((currentFloor-1)*100))).toString() , x: 430, y: 300 },
+                { num: (107+((currentPage)*6+((currentFloor-1)*100))).toString() , x: 430, y: 525 }
               ].map(room => (
                 <g key={`room-${room.num}`} onClick={() => availableRooms.includes(room.num) ? setSelectedRoom(room.num) : null}>
                   <rect 
@@ -269,14 +284,16 @@ const Dashboard: React.FC = () => {
               ))}
 
               {/* Toilet */}
-              <rect x="300" y="690" width="200" height="60" rx="30" className={styles.toiletSection} />
-              <text x="400" y="725" textAnchor="middle" className={styles.svgText}>Toilet</text>
+              <rect x="300" y="680" width="200" height="60" rx="30" className={styles.toiletSection} />
+              <text x="400" y="715" textAnchor="middle" className={styles.svgText}>Toilet</text>
             </svg>
           </div>
 
           <button 
             className={styles.carouselButton}
-            onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
+            onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))
+           
+             }
             disabled={currentPage >= totalPages - 1}
           >
             →
