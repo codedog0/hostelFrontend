@@ -29,7 +29,6 @@ const Dashboard: React.FC = () => {
 
   const getRoomsForFloor = (floor: number) => {
     const start = floor * 100 + 1;
-    const end = start + 19;
     return Array.from({ length: 20 }, (_, i) => start + i);
   };
 
@@ -135,8 +134,6 @@ const Dashboard: React.FC = () => {
   const renderRoomSelection = () => {
     const floorRooms = getRoomsForFloor(currentFloor);
     const totalPages = Math.ceil(floorRooms.length / roomsPerPage);
-    const startIndex = currentPage * roomsPerPage;
-    const displayedRooms = floorRooms.slice(startIndex, startIndex + roomsPerPage);
 
     const handleRoom101=()=>{
       if(currentPage==0){
