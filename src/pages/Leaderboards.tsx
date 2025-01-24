@@ -8,6 +8,7 @@ type Ranking = {
     cgpa: number;
     allotedRoom: number;
 };
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const Leaderboards: React.FC = () => {
     const [rankings, setRankings] = useState<Ranking[]>([]);
@@ -17,7 +18,7 @@ const Leaderboards: React.FC = () => {
     useEffect(() => {
         const fetchRankings = async () => {
             try {
-                const response = await axios.get<Ranking[]>(`${process.env.REACT_APP_API_BASE_URL}/rankings`);
+                const response = await axios.get<Ranking[]>(`${apiUrl}/rankings`);
                 setRankings(response.data);
             } catch (err) {
                 setError('Failed to fetch rankings');

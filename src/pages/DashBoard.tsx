@@ -8,7 +8,7 @@ interface UserInfo {
   allotedRoom: string | null;
   id: string;
 }
-
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
     } else {
       // Fetch user info using Axios
       axios
-        .get(`${process.env.REACT_APP_API_BASE_URL}/getUserInfo`, {
+        .get(`${apiUrl}/getUserInfo`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -51,7 +51,7 @@ const Dashboard: React.FC = () => {
             // If allotedRoom is null, fetch available rooms
             if (!response.data.allotedRoom) {
               axios
-                .get(`${process.env.REACT_APP_API_BASE_URL}/getAvailableRooms`, {
+                .get(`${apiUrl}/getAvailableRooms`, {
                   headers: {
                     Authorization: `Bearer ${token}`,
                   },
@@ -83,7 +83,7 @@ const Dashboard: React.FC = () => {
 
     const token = localStorage.getItem('access_token');
     axios
-      .get(`${process.env.REACT_APP_API_BASE_URL}/getPartnerInfo?partnerId=${partnerId}`, {
+      .get(`${apiUrl}/getPartnerInfo?partnerId=${partnerId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -110,7 +110,7 @@ const Dashboard: React.FC = () => {
     const token = localStorage.getItem('access_token');
     axios
       .post(
-        `${process.env.REACT_APP_API_BASE_URL}/bookRoom`,
+        `${apiUrl}/bookRoom`,
         { roomId: selectedRoom,partnerId:partnerId },
         {
           headers: {

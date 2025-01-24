@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './LoginForm.module.css';
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -23,7 +24,7 @@ const LoginForm: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/signIn?username=${encodeURIComponent(
+        `${apiUrl}/signIn?username=${encodeURIComponent(
           username
         )}&password=${encodeURIComponent(password)}`, // Query parameters in URL
         null // No body for the POST request
