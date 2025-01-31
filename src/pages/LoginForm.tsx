@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './LoginForm.module.css';
+import Spinner from '../components/spinner'; // Import the Spinner component
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const LoginForm: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // Add loading state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +23,7 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     setErrorMessage(null); // Clear previous errors
+    setLoading(true); // Set loading to true
 
     try {
       const response = await axios.post(
@@ -35,7 +38,7 @@ const LoginForm: React.FC = () => {
       if (response.data?.access_token) {
         // Save token to localStorage or context if needed
         localStorage.setItem('access_token', response.data.access_token);
-        
+
         // Redirect to /dashboard
         navigate('/dashboard');
       }
@@ -47,6 +50,8 @@ const LoginForm: React.FC = () => {
       } else {
         setErrorMessage('An unexpected error occurred. Please try again.');
       }
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
 
@@ -77,8 +82,8 @@ const LoginForm: React.FC = () => {
           required
           className={styles.input}
         />
-        <button type="submit" className={styles.button}>
-          Login
+        <button type="submit" className={styles.button} disabled={loading}>
+          {loading ? <Spinner /> : 'Login'}
         </button>
       </form>
     </div>

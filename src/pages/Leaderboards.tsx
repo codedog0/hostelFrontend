@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Spinner from '../components/spinner';
 
 type Ranking = {
     id: number;
@@ -30,8 +31,8 @@ const Leaderboards: React.FC = () => {
         fetchRankings();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
+    if (loading) return <div className='error-center'><Spinner /></div>;
+    if (error) return <div className='error-center'>{error}</div>;
 
   return (
         <div className="leaderboard-container">
@@ -51,7 +52,7 @@ const Leaderboards: React.FC = () => {
                             <td>{index + 1}</td>
                             <td>{ranking.name}</td>
                             <td>{ranking.cgpa}</td>
-                            <td>{ranking.allotedRoom}</td>
+                            <td>{ranking.roomno}</td>
                         </tr>
                     ))}
                 </tbody>

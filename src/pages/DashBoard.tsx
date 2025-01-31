@@ -124,6 +124,7 @@ const Dashboard: React.FC = () => {
           prev ? { ...prev, allotedRoom: selectedRoom.toString() } : prev
         );
         setAvailableRooms([]);
+        navigate('/');
       })
       .catch((error) => {
         console.error('Error setting room:', error);
@@ -140,13 +141,13 @@ const Dashboard: React.FC = () => {
         return (101+((currentFloor-1)*100)).toString();
       }
       else if(currentPage==1){
-        return '1A1';
+        return currentFloor.toString()+'A1';
       }
       else if(currentPage==2){
-        return '1A2';
+        return currentFloor.toString()+'A2';
       }
       else{
-        return '1A3'
+        return currentFloor.toString()+'A3';
       }
     }
 

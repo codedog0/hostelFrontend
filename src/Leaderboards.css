@@ -29,3 +29,10 @@
 .leaderboard-table tr:nth-child(even) {
     background-color: #f9f9f9;
 }
+
+.error-center{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+}
