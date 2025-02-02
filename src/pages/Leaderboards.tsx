@@ -7,7 +7,7 @@ type Ranking = {
     name: string;
     branch: string;
     cgpa: number;
-    allotedRoom: number;
+    roomno: number;
 };
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
 

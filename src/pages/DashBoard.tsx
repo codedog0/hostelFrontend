@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Dashboard.module.css';
+import Spinner from '../components/spinner'; // Import the Spinner component
 
 interface UserInfo {
   name: string;
@@ -18,6 +19,8 @@ const Dashboard: React.FC = () => {
   const [partnerName, setPartnerName] = useState<string | null>(null);
   const [currentFloor, setCurrentFloor] = useState(1);
   const [currentPage, setCurrentPage] = useState(0);
+  const [loading, setLoading] = useState<boolean>(false); // Add loading state
+  
   const roomsPerPage = 6;  // 3x2 grid
 
   const floors = [
@@ -106,28 +109,36 @@ const Dashboard: React.FC = () => {
       alert('Please select a room.');
       return;
     }
+    setLoading(true); // Set loading to true
 
     const token = localStorage.getItem('access_token');
     axios
       .post(
         `${apiUrl}/bookRoom`,
-        { roomId: selectedRoom,partnerId:partnerId },
+        { roomId: selectedRoom, partnerId: partnerId },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       )
-      .then(() => {
-        alert('Room successfully assigned!');
-        setUserInfo((prev) =>
-          prev ? { ...prev, allotedRoom: selectedRoom.toString() } : prev
+      .then((response) => {
+        if(response.data.success){
+
+          alert('Room successfully assigned!');
+          setUserInfo((prev) =>
+            prev ? { ...prev, allotedRoom: selectedRoom.toString() } : prev
         );
         setAvailableRooms([]);
         navigate('/');
-      })
-      .catch((error) => {
-        console.error('Error setting room:', error);
+      }else{
+        
+        alert(response.data.message);
+        navigate('/login');
+      }
+    })
+    .catch((error) => {
+      console.error('Error setting room:', error);
         alert('Failed to assign room. Please try again.');
       });
   };
@@ -136,20 +147,17 @@ const Dashboard: React.FC = () => {
     const floorRooms = getRoomsForFloor(currentFloor);
     const totalPages = Math.ceil(floorRooms.length / roomsPerPage);
 
-    const handleRoom101=()=>{
-      if(currentPage==0){
-        return (101+((currentFloor-1)*100)).toString();
+    const handleRoom101 = () => {
+      if (currentPage === 0) {
+        return (101 + ((currentFloor - 1) * 100)).toString();
+      } else if (currentPage === 1) {
+        return currentFloor.toString() + 'A1';
+      } else if (currentPage === 2) {
+        return currentFloor.toString() + 'A2';
+      } else {
+        return currentFloor.toString() + 'A3';
       }
-      else if(currentPage==1){
-        return currentFloor.toString()+'A1';
-      }
-      else if(currentPage==2){
-        return currentFloor.toString()+'A2';
-      }
-      else{
-        return currentFloor.toString()+'A3';
-      }
-    }
+    };
 
     return (
       <div className={styles.formGroup}>
@@ -158,9 +166,8 @@ const Dashboard: React.FC = () => {
           {floors.map((floor) => (
             <button
               key={floor.number}
-              className={`${styles.floorButton} ${
-                currentFloor === floor.number ? styles.active : ''
-              }`}
+              className={`${styles.floorButton} ${currentFloor === floor.number ? styles.active : ''
+                }`}
               onClick={() => {
                 setCurrentFloor(floor.number);
                 setCurrentPage(0);
@@ -170,7 +177,7 @@ const Dashboard: React.FC = () => {
             </button>
           ))}
         </div>
-        
+
         <div className={styles.roomLegend}>
           <div className={styles.legendItem}>
             <span className={styles.legendBox + ' ' + styles.available}></span>
@@ -184,7 +191,7 @@ const Dashboard: React.FC = () => {
 
         <label className={styles.label}>Select a room:</label>
         <div className={styles.roomCarousel}>
-          <button 
+          <button
             className={styles.carouselButton}
             onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
             disabled={currentPage === 0}
@@ -193,90 +200,90 @@ const Dashboard: React.FC = () => {
           </button>
 
           <div className={styles.floorLayout}>
-            <svg 
-              viewBox="0 0 800 800" 
+            <svg
+              viewBox="0 0 800 800"
               className={styles.floorSvg}
+              width="100%"
+              height="100%"
+              preserveAspectRatio="xMidYMid meet"
             >
               {/* Balcony */}
               <rect x="250" y="50" width="300" height="60" rx="30" className={styles.balconySection} />
               <text x="400" y="85" textAnchor="middle" className={styles.svgText}>Balcony</text>
 
               {/* Main Vertical Corridor */}
-              <rect x="380" y="110" width="40" height="580" fill="#A9A9A9"/>
+              <rect x="380" y="110" width="40" height="580" fill="#A9A9A9" />
 
               {/* Horizontal Corridors */}
-              <rect x="200" y="250" width="400" height="40" fill="#A9A9A9"/>
-              <rect x="200" y="450" width="400" height="40" fill="#A9A9A9"/>
+              <rect x="200" y="250" width="400" height="40" fill="#A9A9A9" />
+              <rect x="200" y="450" width="400" height="40" fill="#A9A9A9" />
 
               {/* Room 101 (Special Position) */}
               <g onClick={() => availableRooms.includes(handleRoom101()) ? setSelectedRoom(handleRoom101()) : null}>
-                <rect 
-                  x="100" 
-                  y="415" 
-                  width="140" 
-                  height="100" 
+                <rect
+                  x="100"
+                  y="415"
+                  width="140"
+                  height="100"
                   rx="30"
-                  className={`${styles.svgRoom} ${
-                    selectedRoom === handleRoom101() ? styles.selected : ''
-                  } ${availableRooms.includes(handleRoom101()) ? styles.available : styles.occupied}`}
+                  className={`${styles.svgRoom} ${selectedRoom === handleRoom101() ? styles.selected : ''
+                    } ${availableRooms.includes(handleRoom101()) ? styles.available : styles.occupied}`}
                 />
                 <text x="170" y="470" textAnchor="middle" className={styles.svgText}>
-                  Room {handleRoom101()}
+                  {handleRoom101()}
                 </text>
               </g>
 
               {/* Left Side Rooms */}
               {[
-                { num: (104+((currentPage)*6+((currentFloor-1)*100))).toString()  , x: 200, y: 130 },
-                { num: (103 +((currentPage)*6+((currentFloor-1)*100))).toString() , x: 200, y: 300 },
-                { num: (102 + ((currentPage)*6+((currentFloor-1)*100))).toString(), x: 200, y: 525 }
+                { num: (104 + ((currentPage) * 6 + ((currentFloor - 1) * 100))).toString(), x: 200, y: 130 },
+                { num: (103 + ((currentPage) * 6 + ((currentFloor - 1) * 100))).toString(), x: 200, y: 300 },
+                { num: (102 + ((currentPage) * 6 + ((currentFloor - 1) * 100))).toString(), x: 200, y: 525 }
               ].map(room => (
                 <g key={`room-${room.num}`} onClick={() => availableRooms.includes(room.num) ? setSelectedRoom(room.num) : null}>
-                  <rect 
-                    x={room.x} 
-                    y={room.y} 
-                    width="170" 
-                    height="110" 
+                  <rect
+                    x={room.x}
+                    y={room.y}
+                    width="170"
+                    height="110"
                     rx="30"
-                    className={`${styles.svgRoom} ${
-                      selectedRoom === room.num ? styles.selected : ''
-                    } ${availableRooms.includes(room.num) ? styles.available : styles.occupied}`}
+                    className={`${styles.svgRoom} ${selectedRoom === room.num ? styles.selected : ''
+                      } ${availableRooms.includes(room.num) ? styles.available : styles.occupied}`}
                   />
-                  <text 
-                    x={room.x + 85} 
-                    y={room.y + 65} 
-                    textAnchor="middle" 
+                  <text
+                    x={room.x + 85}
+                    y={room.y + 65}
+                    textAnchor="middle"
                     className={styles.svgText}
                   >
-                    Room {room.num}
+                    {room.num}
                   </text>
                 </g>
               ))}
 
               {/* Right Side Rooms */}
               {[
-                { num: (105 +((currentPage)*6+((currentFloor-1)*100))).toString(), x: 430, y: 130 },
-                { num: (106+((currentPage)*6+((currentFloor-1)*100))).toString() , x: 430, y: 300 },
-                { num: (107+((currentPage)*6+((currentFloor-1)*100))).toString() , x: 430, y: 525 }
+                { num: (105 + ((currentPage) * 6 + ((currentFloor - 1) * 100))).toString(), x: 430, y: 130 },
+                { num: (106 + ((currentPage) * 6 + ((currentFloor - 1) * 100))).toString(), x: 430, y: 300 },
+                { num: (107 + ((currentPage) * 6 + ((currentFloor - 1) * 100))).toString(), x: 430, y: 525 }
               ].map(room => (
                 <g key={`room-${room.num}`} onClick={() => availableRooms.includes(room.num) ? setSelectedRoom(room.num) : null}>
-                  <rect 
-                    x={room.x} 
-                    y={room.y} 
-                    width="170" 
-                    height="110" 
+                  <rect
+                    x={room.x}
+                    y={room.y}
+                    width="170"
+                    height="110"
                     rx="30"
-                    className={`${styles.svgRoom} ${
-                      selectedRoom === room.num ? styles.selected : ''
-                    } ${availableRooms.includes(room.num) ? styles.available : styles.occupied}`}
+                    className={`${styles.svgRoom} ${selectedRoom === room.num ? styles.selected : ''
+                      } ${availableRooms.includes(room.num) ? styles.available : styles.occupied}`}
                   />
-                  <text 
-                    x={room.x + 85} 
-                    y={room.y + 65} 
-                    textAnchor="middle" 
+                  <text
+                    x={room.x + 85}
+                    y={room.y + 65}
+                    textAnchor="middle"
                     className={styles.svgText}
                   >
-                    Room {room.num}
+                    {room.num}
                   </text>
                 </g>
               ))}
@@ -287,11 +294,9 @@ const Dashboard: React.FC = () => {
             </svg>
           </div>
 
-          <button 
+          <button
             className={styles.carouselButton}
-            onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))
-           
-             }
+            onClick={() => setCurrentPage(prev => Math.min(totalPages - 1, prev + 1))}
             disabled={currentPage >= totalPages - 1}
           >
             →
@@ -304,11 +309,13 @@ const Dashboard: React.FC = () => {
               Selected Room: {selectedRoom}
               {partnerName && <span> | Partner: {partnerName}</span>}
             </p>
-            <button 
+            <button
               className={styles.bookButton}
               onClick={handleSelectRoom}
+              disabled={loading}
             >
-              Book Room
+              {loading ? <Spinner /> : 'Book Room'}
+              
             </button>
           </div>
         )}
