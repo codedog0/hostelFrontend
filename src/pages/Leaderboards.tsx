@@ -51,7 +51,7 @@ const Leaderboards: React.FC = () => {
                         <tr key={ranking.id}>
                             <td>{index + 1}</td>
                             <td>{ranking.name}</td>
-                            <td>{ranking.cgpa}</td>
+                            <td>XX</td>
                             <td>{ranking.roomno}</td>
                         </tr>
                     ))}
