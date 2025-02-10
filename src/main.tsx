@@ -5,7 +5,7 @@ import {
   RouterProvider
 } from 'react-router-dom';
 import './index.css'
-import './Leaderboards.css'
+import './pages/Leaderboards.css'
 import App from './App'
 const router = createHashRouter([
   {

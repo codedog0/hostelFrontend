@@ -49,10 +49,12 @@ const Dashboard: React.FC = () => {
         })
         .then((response) => {
           if (response.data) {
+            localStorage.setItem('name', response.data.name);
             setUserInfo(response.data);
-
+            
             // If allotedRoom is null, fetch available rooms
             if (!response.data.allotedRoom) {
+              localStorage.setItem('allotedRoom', response.data.allotedRoom);
               axios
                 .get(`${apiUrl}/getAvailableRooms`, {
                   headers: {
@@ -71,8 +73,9 @@ const Dashboard: React.FC = () => {
           }
         })
         .catch((error) => {
-          console.error('Error fetching user info:', error);
           localStorage.removeItem("access_token");
+          localStorage.removeItem("name");
+          localStorage.removeItem("allotedRoom");
           navigate('/login'); // Redirect to login if fetching user info fails
         });
     }
