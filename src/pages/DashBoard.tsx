@@ -72,7 +72,7 @@ const Dashboard: React.FC = () => {
             throw new Error('Invalid user data');
           }
         })
-        .catch((error) => {
+        .catch(() => {
           localStorage.removeItem("access_token");
           localStorage.removeItem("name");
           localStorage.removeItem("allotedRoom");

@@ -65,7 +65,7 @@ const Leaderboards: React.FC = () => {
                             <tr key={ranking.id}
                             style={{ backgroundColor: ranking.name.length > 2 ? '#90ee90' : 'transparent' }}>
                           <td>{index + 1}</td>
-                          <td>{ranking.name}</td> 
+                          <td>{ranking.name}........</td> 
                           <td>{ranking.cgpa}</td>
                           <td>{ranking.roomno}</td>
                           {index % 10 === 0 && ( // Only add time slot for first row of each 10-row group
