@@ -3,7 +3,6 @@ import axios from 'axios';
 import Spinner from '../components/spinner';
 import { Link } from 'react-router-dom';
 import "./Leaderboards.css";
-import { versions } from 'process';
 type Ranking = {
     id: number;
     name: string;
