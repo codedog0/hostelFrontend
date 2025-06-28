@@ -3,6 +3,7 @@ import axios from 'axios';
 import Spinner from '../components/spinner';
 import { Link } from 'react-router-dom';
 import "./Leaderboards.css";
+import { versions } from 'process';
 type Ranking = {
     id: number;
     name: string;
@@ -18,10 +19,28 @@ const Leaderboards: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const userJson = localStorage.getItem('name');
     const username = userJson !== null ? userJson : "";
-    const handleTime = (id:number):string => {
-        const startHour = 9 + Math.floor(id / 10);
-        const endHour = startHour + 1;
-        return `${startHour}:00-${endHour}:00`;
+    const [timeSlots, setTimeSlots] = useState<CondensedTimeSlot[]>([]);
+
+    interface CondensedTimeSlot {
+        id:number;
+        rank_start: number;
+        rank_end: number;
+        access_start: string;
+        access_end: string;
+    }
+
+    useEffect(() => {
+        fetchTimeSlots().then(setTimeSlots);
+    }, []);
+    const fetchTimeSlots = async (): Promise<CondensedTimeSlot[]> => {
+        const res = await fetch(`${apiUrl}/timeslots`);
+        return await res.json();
+    };
+
+    const getTimeSlotForRank = (rank: number): string => {
+        
+        const slot = timeSlots.find(s => rank >= s.rank_start && rank <= s.rank_end);
+        return slot ? `${slot.access_start}-${slot.access_end}` : "Time Not Available";
     };
     useEffect(() => {
         const fetchRankings = async () => {
@@ -95,7 +114,7 @@ const Leaderboards: React.FC = () => {
                                         }}
                                         title="This is the time slot for this group"
                                     >
-                                        {handleTime(index)}
+                                        {getTimeSlotForRank(index+1)}
                                     </td>
                                 )}
                             </tr>
