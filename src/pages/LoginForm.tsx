@@ -16,7 +16,7 @@ const LoginForm: React.FC = () => {
     // Check if access_token exists in localStorage
     const token = localStorage.getItem('access_token');
     if (token) {
-      navigate('/dashboard'); // Redirect to /dashboard if token exists
+      navigate('/Leaderboards'); // Redirect to /dashboard if token exists
     }
   }, [navigate]);
 
@@ -40,7 +40,7 @@ const LoginForm: React.FC = () => {
         localStorage.setItem('access_token', response.data.access_token);
 
         // Redirect to /dashboard
-        navigate('/dashboard');
+        navigate('/Leaderboards');
       }
     } catch (error: any) {
       if (error.response) {

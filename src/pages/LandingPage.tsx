@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import image1 from '../assets/1.png';
 import image2 from '../assets/2.png';
@@ -7,6 +7,11 @@ import image4 from '../assets/4.png';
 import image5 from '../assets/5.png';
 const Landingpage: React.FC = () => {
   const navigate = useNavigate();
+  const [cardIndex, setCardIndex] = React.useState(0);
+  const totalCards = 5;
+
+  // 1. Create a ref
+  const seeItRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -39,11 +44,12 @@ const Landingpage: React.FC = () => {
                       Discover a seamless way to explore and secure your ideal hostel accommodation with our intuitive web app.
                     </h2>
                   </div>
-                    <Link
-                    to="/login"
-                    className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#0c7ff2] text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"
+                    {/* 3. Update button to scroll to section */}
+                    <button
+                      onClick={() => seeItRef.current?.scrollIntoView({ behavior: 'smooth' })}
+                      className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#0c7ff2] text-white text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"
                     >
-                  <span className="truncate">Get Started</span></Link>
+                  <span className="truncate">Get Started</span></button>
                 </div>
               </div>
             </div>
@@ -74,10 +80,11 @@ const Landingpage: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex flex-1 gap-3 rounded-lg border border-[#dbe0e6] bg-white p-4 flex-col">
-                  <div className="text-[#111418]" data-icon="Check" data-size="24px" data-weight="regular">
+                  <div className="text-[#111418]" data-icon="Person" data-size="24px" data-weight="regular">
+                    {/* Person Icon SVG */}
                     <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                      <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path>
-                    </svg>
+      <path d="M128,128a56,56,0,1,0-56-56A56,56,0,0,0,128,128Zm0,16c-39.7,0-72,32.3-72,72a8,8,0,0,0,8,8H192a8,8,0,0,0,8-8C200,176.3,167.7,144,128,144Z"/>
+    </svg>
                   </div>
                   <div className="flex flex-col gap-1">
                     <h2 className="text-[#111418] text-base font-bold leading-tight">Select Partner</h2>
@@ -100,11 +107,9 @@ const Landingpage: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex flex-1 gap-3 rounded-lg border border-[#dbe0e6] bg-white p-4 flex-col">
-                  <div className="text-[#111418]" data-icon="MagnifyingGlass" data-size="24px" data-weight="regular">
+                 <div className="text-[#111418]" data-icon="Check" data-size="24px" data-weight="regular">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                      <path
-                        d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"
-                      ></path>
+                      <path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"></path>
                     </svg>
                   </div>
                   <div className="flex flex-col gap-1">
@@ -116,129 +121,86 @@ const Landingpage: React.FC = () => {
                 </div>
               </div>
             </div>
-            <h2 className="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">See It in Action</h2>
+            <h2
+                ref={seeItRef}
+                className="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5"
+              >
+                See It in Action
+              </h2>
             
             {/* Horizontal slider bar to scroll the cards, showing only one card at a time */}
             <div className="flex flex-col items-center mt-4">
-              <div
-              className="relative w-full max-w-xs overflow-hidden"
-              style={{ minHeight: 320 }}
-              >
-              <div
-                className="cards-scroll-container flex transition-transform duration-300"
-                style={{
-                width: '100%',
-                transform: `translateX(-${(Number(
-                  (window as any).__cardSliderIndex || 0
-                ) * 100)}%)`,
-                }}
-                id="single-card-slider"
-              >
-                {[image1, image2, image3, image4, image5].map((img, idx) => (
+              <div className="relative w-full max-w-xs overflow-hidden" style={{ minHeight: 320 }}>
                 <div
-                  key={idx}
-                  className="flex flex-col gap-4 rounded-lg min-w-full max-w-full"
+                  className="cards-scroll-container flex transition-transform duration-300"
+                  style={{
+                    width: '100%',
+                    transform: `translateX(-${cardIndex * 100}%)`,
+                  }}
+                  id="single-card-slider"
                 >
-                  <div className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex flex-col">
-                  <img
-                    src={img}
-                    alt={`Step ${idx + 1}`}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                  </div>
-                  <div>
-                  <p className="text-[#111418] text-base font-medium leading-normal">
-                    {[
-                    'Step 1: Login with your Rknec Credentials',
-                    'Step 2: Enter Your Parther Id',
-                    'Step 3: Select Your Prefered Floor',
-                    'Step 4: Select Your Prefered Room',
-                    'Step 5: Click On Book Room',
-                    ][idx]}
-                  </p>
-                  <p className="text-[#60758a] text-sm font-normal leading-normal">
-                    {[
-                    'Simple and Easy Login Through Your Official College Credentials',
-                    'Ask your prefered partner for their ID which is visible once logged-in',
-                    'Verify the name of your Partner and Select Your Preffered Floor',
-                    'Use navigation Arrows to navigate through the Panel and Select Your Room.',
-                    'Verify your Selection and Simply Click on Book Room Option to Confirm your room',
-                    ][idx]}
-                  </p>
-                  </div>
+                  {[image1, image2, image3, image4, image5].map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="flex flex-col gap-4 rounded-lg min-w-full max-w-full"
+                    >
+                      <div className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex flex-col">
+                        <img
+                          src={img}
+                          alt={`Step ${idx + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-[#111418] text-base font-medium leading-normal">
+                          { [
+                            'Step 1: Login with your Rknec Credentials',
+                            'Step 2: Enter Your Parther Id',
+                            'Step 3: Select Your Prefered Floor',
+                            'Step 4: Select Your Prefered Room',
+                            'Step 5: Click On Book Room',
+                          ][idx]}
+                        </p>
+                        <p className="text-[#60758a] text-sm font-normal leading-normal">
+                          { [
+                            'Simple and Easy Login Through Your Official College Credentials',
+                            'Ask your prefered partner for their ID which is visible once logged-in',
+                            'Verify the name of your Partner and Select Your Preffered Floor',
+                            'Use navigation Arrows to navigate through the Panel and Select Your Room.',
+                            'Verify your Selection and Simply Click on Book Room Option to Confirm your room',
+                          ][idx]}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                ))}
               </div>
-              </div>
-              {/* Slider bar */}
-              <div className="flex justify-center mt-4 w-full max-w-xs">
-              <input
-                type="range"
-                min={0}
-                max={4}
-                defaultValue={0}
-                className="w-full h-2 bg-transparent appearance-none cursor-pointer accent-[#0c7ff2] z-10"
-                style={{
-                WebkitAppearance: 'none',
-                appearance: 'none',
-                }}
-                onChange={e => {
-                const idx = Number(e.target.value);
-                (window as any).__cardSliderIndex = idx;
-                const container = document.getElementById('single-card-slider');
-                if (container) {
-                  container.style.transform = `translateX(-${idx * 100}%)`;
-                }
-                }}
-              />
-              <style>
-                {`
-                input[type="range"].w-full::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                appearance: none;
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                background: #0c7ff2;
-                border: 2px solid #fff;
-                box-shadow: 0 0 2px #888;
-                cursor: pointer;
-                margin-top: -11px;
-                transition: background 0.2s;
-                }
-                input[type="range"].w-full::-moz-range-thumb {
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                background: #0c7ff2;
-                border: 2px solid #fff;
-                box-shadow: 0 0 2px #888;
-                cursor: pointer;
-                transition: background 0.2s;
-                }
-                input[type="range"].w-full::-ms-thumb {
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                background: #0c7ff2;
-                border: 2px solid #fff;
-                box-shadow: 0 0 2px #888;
-                cursor: pointer;
-                transition: background 0.2s;
-                }
-                input[type="range"].w-full::-webkit-slider-runnable-track {
-                height: 2px;
-                background: transparent;
-                }
-                input[type="range"].w-full::-ms-fill-lower,
-                input[type="range"].w-full::-ms-fill-upper {
-                background: transparent;
-                }
-                input[type="range"].w-full:focus {
-                outline: none;
-                }
-                `}
-              </style>
+              {/* Next/Previous Buttons */}
+              <div className="flex justify-center mt-4 w-full max-w-xs gap-4">
+                <button
+                  className="bg-[#0c7ff2] text-white px-4 py-2 rounded disabled:opacity-50"
+                  onClick={() => setCardIndex((prev) => Math.max(prev - 1, 0))}
+                  disabled={cardIndex === 0}
+                >
+                  Previous
+                </button>
+                {cardIndex < totalCards - 1 ? (
+                  <button
+                    className="bg-[#0c7ff2] text-white px-4 py-2 rounded disabled:opacity-50"
+                    onClick={() => setCardIndex((prev) => Math.min(prev + 1, totalCards - 1))}
+                    disabled={cardIndex === totalCards - 1}
+                  >
+                    Next
+                  </button>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="bg-[#0c7ff2] text-white px-4 py-2 rounded flex items-center justify-center"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    Login
+                  </Link>
+                )}
               </div>
             </div>
           </div>
