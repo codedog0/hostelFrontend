@@ -26,7 +26,7 @@ const Leaderboards: React.FC = () => {
     useEffect(() => {
         const fetchRankings = async () => {
             try {
-                const response = await axios.get<Ranking[]>(`${apiUrl}/rankings/?userName=${encodeURIComponent(username)}`);
+                const response = await axios.get<Ranking[]>(`${apiUrl}/rankings?userName=${encodeURIComponent(username)}`);
                 const rankingsWithId = response.data.map((item, index) => ({
                     ...item,
                     id: item.id ?? index + 1,
@@ -51,7 +51,6 @@ const Leaderboards: React.FC = () => {
             margin: "40px auto",
             background: "#fff",
             borderRadius: 12,
-            boxShadow: "0 2px 16px rgba(0,0,0,0.08)",
             padding: 24,
             overflowX: "auto"
         }}>

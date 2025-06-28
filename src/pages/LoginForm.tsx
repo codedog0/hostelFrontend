@@ -16,7 +16,7 @@ const LoginForm: React.FC = () => {
     // Check if access_token exists in localStorage
     const token = localStorage.getItem('access_token');
     if (token) {
-      navigate('/Leaderboards'); // Redirect to /dashboard if token exists
+      navigate('/dashboard'); // Redirect to /dashboard if token exists
     }
   }, [navigate]);
 
@@ -33,14 +33,20 @@ const LoginForm: React.FC = () => {
         null // No body for the POST request
       );
 
-      console.log('Login successful:', response.data);
-
+      // console.log('Login successful:', response.data);
+      if (response.data.username){
+        console.log("NAME DONE")
+        localStorage.setItem('name', response.data.username);
+      }
       if (response.data?.access_token) {
         // Save token to localStorage or context if needed
         localStorage.setItem('access_token', response.data.access_token);
 
         // Redirect to /dashboard
-        navigate('/Leaderboards');
+        navigate('/dashboard');
+      }
+      else{
+          setErrorMessage(response.data.message)
       }
     } catch (error: any) {
       if (error.response) {
@@ -58,7 +64,7 @@ const LoginForm: React.FC = () => {
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit} className={styles.form}>
-        <h2 className={styles.title}>Login</h2>
+        <h1 className={styles.title}><b>Login</b></h1>
         {errorMessage && (
           <div className={styles.error}>
             {errorMessage}
@@ -68,6 +74,7 @@ const LoginForm: React.FC = () => {
         <input
           type="text"
           id="username"
+          placeholder='username@rknec.edu'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required

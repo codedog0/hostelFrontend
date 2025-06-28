@@ -7,6 +7,8 @@ import Spinner from '../components/spinner'; // Import the Spinner component
 interface UserInfo {
   name: string;
   allotedRoom: string | null;
+  allotedRoomOwner:string|null;
+  allotedRoomPartner:string|null;
   id: string;
 }
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -72,7 +74,7 @@ const Dashboard: React.FC = () => {
             throw new Error('Invalid user data');
           }
         })
-        .catch((error) => {
+        .catch(() => {
           localStorage.removeItem("access_token");
           localStorage.removeItem("name");
           localStorage.removeItem("allotedRoom");
@@ -333,12 +335,23 @@ const Dashboard: React.FC = () => {
         {userInfo ? (
           <>
             <div className={styles.info}>
+              <p>Note: Between You and your room partner, let the person with HIGHER CGPA book the Room</p>
               <p>Hello, {userInfo.name}!</p>
-              <p>Your ID: {userInfo.id}</p>
+              <p>Your ID: {userInfo.id} </p>
               <p>
                 {userInfo.allotedRoom
                   ? `Your allotted room is: ${userInfo.allotedRoom}`
                   : 'No room has been allotted to you yet.'}
+              </p>
+              <p>
+                {userInfo.allotedRoom
+                  ? `Room Owner is: ${userInfo.allotedRoomOwner}`
+                  : ''}
+              </p>
+              <p>
+                {userInfo.allotedRoom
+                  ? `Room Partner is: ${userInfo.allotedRoomPartner}`
+                  : ''}
               </p>
             </div>
 
